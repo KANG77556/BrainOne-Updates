@@ -1,0 +1,7 @@
+{
+  "versionCode": 15,
+  "versionName": "1.0.0-beta8.8",
+  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.8/BrainOne-1.0.0-beta8.8-AutoUpdate.apk",
+  "sha256": "78b31280c672dc238bfbe32cdd46935085dafe712e8fcd4a90c3b103abef99bd",
+  "notes": "자동 업데이트 기능 추가: 새 버전 확인, APK 다운로드, SHA-256 검증 및 Android 설치 화면 연결"
+}
