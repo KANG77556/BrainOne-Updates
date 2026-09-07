@@ -1,7 +1,7 @@
-{
-  "versionCode": 16,
-  "versionName": "1.0.0-beta8.9",
-  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.9/BrainOne-1.0.0-beta8.9-AutoUpdate.apk",
-  "sha256": "8549033d655c862fd6246f08fb2030414e428211994aff42bc613f33f6f9b045",
-  "notes": "AI 비서 홈: 오늘 브리핑, 대화형 입력, 음성 입력, 카메라 OCR, 안전한 명령 실행 확인"
+﻿{
+    "versionCode":  17,
+    "versionName":  "1.0.0-beta8.10",
+    "apkUrl":  "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10/BrainOne-1.0.0-beta8.10-AutoUpdate.apk",
+    "sha256":  "59df646d9603a708f175129f480552a80247632a0eb4030d5724444da982d30a",
+    "notes":  "AI 비서 홈 UX 개선: 오늘 브리핑, 빠른 프롬프트, 대화형 입력, 음성/카메라 OCR 초안 입력, 명시적 저장 확인, 컴팩트 빠른 추가 시트"
 }
