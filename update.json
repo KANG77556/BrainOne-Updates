@@ -1,7 +1,7 @@
 {
-  "versionCode": 19,
-  "versionName": "1.0.0-beta8.10.2",
-  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10.2/BrainOne-1.0.0-beta8.10.2-AutoUpdate.apk",
-  "sha256": "63c9943e99964b33b9587f434394d9ab51e8686217e05d286d33318eab2c6bc4",
-  "notes": "앱 실행 직후 종료 문제 수정: Google OAuth 클라이언트 ID 미설정 시 세션 복구 예외를 안전하게 처리합니다."
+  "versionCode": 20,
+  "versionName": "1.0.0-beta8.10.3",
+  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10.3/BrainOne-1.0.0-beta8.10.3-AutoUpdate.apk",
+  "sha256": "3361f76e400b69ed284432866db4fe0351e78276d49009d0584cd22252822f60",
+  "notes": "AI 입력창의 키보드/하단 내비게이션 안전영역을 개선하고 입력창 최대 높이를 4줄로 조정했습니다. 빠른 추가 화면의 하단 여백도 보완했습니다."
 }
