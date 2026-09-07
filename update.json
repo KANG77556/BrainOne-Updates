@@ -1,7 +1,7 @@
 {
-  "versionCode": 21,
-  "versionName": "1.0.0-beta8.10.4",
-  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10.4/BrainOne-1.0.0-beta8.10.4-AutoUpdate.apk",
-  "sha256": "34015eb37b20b65a043dcc73a8d92461639685881ffef8926e3c879e5c1736ca",
-  "notes": "Google OAuth Client ID 누락 문제를 수정하고 로그인 빌드 설정과 배포 파이프라인을 보강했습니다. beta8.10 UI/입력 개선 사항도 포함합니다."
+  "versionCode": 22,
+  "versionName": "1.0.0-beta8.10.5",
+  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10.5/BrainOne-1.0.0-beta8.10.5-AutoUpdate.apk",
+  "sha256": "f74af36fc1a7530cdca3e1e67ab7b4a30c52f124a3a6ffa8fb5a1577832787ab",
+  "notes": "빠른 추가 입력 화면의 키보드 가림 문제를 수정했습니다. 키보드가 열린 상태에서도 입력 영역을 스크롤할 수 있고 저장 버튼에 접근할 수 있습니다."
 }
