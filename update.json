@@ -1,7 +1,7 @@
 {
-  "versionCode": 18,
-  "versionName": "1.0.0-beta8.10.1",
-  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10.1/BrainOne-1.0.0-beta8.10.1-AutoUpdate.apk",
-  "sha256": "3153e0fb45e52f8e25446517dcdff346328c67aa343c0b8d622f9b7fd110a6a4",
-  "notes": "자동업데이트 경로 수정: 공개 update.json URL 및 manifest 필드 호환, 향후 자동업데이트 정상화"
+  "versionCode": 19,
+  "versionName": "1.0.0-beta8.10.2",
+  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-beta8.10.2/BrainOne-1.0.0-beta8.10.2-AutoUpdate.apk",
+  "sha256": "7622e815b65d2f7e9cdfc9bcec6fb52a2ac6c67eb5117ab589f1b3270b6a2418",
+  "notes": "앱 실행 직후 종료 문제 수정: Google OAuth 클라이언트 ID 미설정 시 세션 복구 예외를 안전하게 처리합니다."
 }
