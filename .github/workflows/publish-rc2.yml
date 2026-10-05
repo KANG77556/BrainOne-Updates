@@ -1,0 +1,78 @@
+name: Publish BrainOne RC2 Update
+
+on:
+  push:
+    paths:
+      - ".github/workflows/publish-rc2.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout update repository
+        uses: actions/checkout@v5
+
+      - name: Download signed RC2 assets from Memo34
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download brainone-v1.0.0-rc2-build             --repo KANG77556/Memo34             --pattern "BrainOne-1.0.0-rc2.apk"             --pattern "BrainOne-1.0.0-rc2.apk.sha256"
+          test -s BrainOne-1.0.0-rc2.apk
+          test -s BrainOne-1.0.0-rc2.apk.sha256
+          sha256sum -c BrainOne-1.0.0-rc2.apk.sha256
+
+      - name: Publish trusted RC2 release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: brainone-v1.0.0-rc2
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release delete "$RELEASE_TAG" --cleanup-tag --yes
+          fi
+          gh release create "$RELEASE_TAG"             BrainOne-1.0.0-rc2.apk             BrainOne-1.0.0-rc2.apk.sha256             --title "BrainOne 1.0.0 RC2"             --notes "Trusted in-app update release for BrainOne RC2."             --prerelease
+
+      - name: Update production manifest
+        run: |
+          set -euo pipefail
+          SHA256="$(sha256sum BrainOne-1.0.0-rc2.apk | awk '{print $1}')"
+          python3 - "$SHA256" <<'PY'
+          import json, pathlib, sys
+          path = pathlib.Path("update.json")
+          sha = sys.argv[1].strip().lower()
+          data = {
+              "versionCode": 24,
+              "versionName": "1.0.0-rc2",
+              "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-rc2/BrainOne-1.0.0-rc2.apk",
+              "sha256": sha,
+              "notes": "BrainOne 1.0.0 RC2: 온디바이스 AI 기반, 서명 릴리스, 신뢰 URL 제한 및 SHA-256 검증 업데이트 채널."
+          }
+          path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add update.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "release: publish BrainOne 1.0.0 rc2 update"
+          git push
+
+      - name: Verify published manifest and asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$(jq -r .versionCode update.json)" = "24"
+          test "$(jq -r .versionName update.json)" = "1.0.0-rc2"
+          test "$(jq -r .apkUrl update.json)" = "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-rc2/BrainOne-1.0.0-rc2.apk"
+          EXPECTED="$(jq -r .sha256 update.json)"
+          ACTUAL="$(sha256sum BrainOne-1.0.0-rc2.apk | awk '{print $1}')"
+          test "$EXPECTED" = "$ACTUAL"
+          curl -fL --retry 5 --retry-delay 2 -o published.apk             "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-rc2/BrainOne-1.0.0-rc2.apk"
+          test "$(sha256sum published.apk | awk '{print $1}')" = "$EXPECTED"
