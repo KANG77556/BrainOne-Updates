@@ -1,0 +1,31 @@
+name: Publish Brain One 1.0.1 update
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-brainone-101.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Fetch and validate signed APK
+        env:
+          EXPECTED_SHA256: a093818744bf43aa420ed643e9bf6fe454ecb8bb8fe9b301d069557136e5156e
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 -o BrainOne-1.0.1.apk 'https://github.com/KANG77556/Memo34/releases/download/brainone-v1.0.1-build/BrainOne-1.0.1.apk'
+          echo "$EXPECTED_SHA256  BrainOne-1.0.1.apk" | sha256sum -c -
+          printf '%s  BrainOne-1.0.1.apk\n' "$EXPECTED_SHA256" > BrainOne-1.0.1.apk.sha256
+      - name: Publish update APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view brainone-v1.0.1 >/dev/null 2>&1; then
+            gh release upload brainone-v1.0.1 BrainOne-1.0.1.apk BrainOne-1.0.1.apk.sha256 --clobber
+          else
+            gh release create brainone-v1.0.1 BrainOne-1.0.1.apk BrainOne-1.0.1.apk.sha256 --title 'Brain One 1.0.1' --notes '로컬 AI 응답 스트리밍과 추론 대기 시간 개선. 서명된 업데이트 APK.' --latest
+          fi
