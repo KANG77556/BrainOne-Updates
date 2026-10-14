@@ -1,7 +1,7 @@
 {
-  "versionCode": 24,
-  "versionName": "1.0.0-rc2",
-  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.0-rc2/BrainOne-1.0.0-rc2.apk",
-  "sha256": "d607adc188cae3f1343677e3e35c67ca44945b4d923d8a9becd43c7896adf195",
-  "notes": "BrainOne 1.0.0 RC2: 온디바이스 AI 기반, 서명 릴리스, 신뢰 URL 제한, SHA-256 검증 및 앱 내 설치 흐름."
+  "versionCode": 25,
+  "versionName": "1.0.1",
+  "apkUrl": "https://github.com/KANG77556/BrainOne-Updates/releases/download/brainone-v1.0.1/BrainOne-1.0.1.apk",
+  "sha256": "a093818744bf43aa420ed643e9bf6fe454ecb8bb8fe9b301d069557136e5156e",
+  "notes": "Brain One 1.0.1: 로컬 AI 응답 스트리밍, 추론 대기 시간 제한, 취소 및 로딩 상태 복구."
 }
