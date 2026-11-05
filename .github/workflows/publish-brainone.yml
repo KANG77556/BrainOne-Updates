@@ -1,0 +1,95 @@
+name: Publish BrainOne update
+
+# 비공개 저장소(Memo34)의 빌드 릴리스 APK를 받아 검증한 뒤,
+# 이 공개 저장소에 릴리스로 올리고 update.json 을 갱신한다.
+# 필요한 시크릿: MEMO34_READ_TOKEN (Memo34 저장소의 Contents 읽기 권한이 있는 토큰)
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '버전 이름 (예: 1.0.2)'
+        required: true
+      version_code:
+        description: '버전 코드 (예: 26)'
+        required: true
+      notes:
+        description: '업데이트 설명'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      VERSION: ${{ inputs.version }}
+      VERSION_CODE: ${{ inputs.version_code }}
+      NOTES: ${{ inputs.notes }}
+      SOURCE_REPO: KANG77556/Memo34
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: 입력값 확인
+        run: |
+          set -euo pipefail
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "버전 형식이 올바르지 않습니다: $VERSION"; exit 1; }
+          [[ "$VERSION_CODE" =~ ^[0-9]+$ ]] || { echo "버전 코드는 숫자여야 합니다: $VERSION_CODE"; exit 1; }
+
+      - name: 비공개 빌드 릴리스에서 APK 받기
+        env:
+          GH_TOKEN: ${{ secrets.MEMO34_READ_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::error::MEMO34_READ_TOKEN 시크릿이 없습니다. Memo34 읽기 권한 토큰을 저장소 시크릿에 등록하세요."
+            exit 1
+          fi
+          TAG="brainone-v${VERSION}-build"
+          gh release download "$TAG" --repo "$SOURCE_REPO" \
+            --pattern "BrainOne-${VERSION}.apk" --pattern "BrainOne-${VERSION}.apk.sha256" --dir work
+          cd work
+          sha256sum -c "BrainOne-${VERSION}.apk.sha256"
+
+      - name: APK 정보 확인
+        run: |
+          set -euo pipefail
+          APK="work/BrainOne-${VERSION}.apk"
+          BT="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          BADGING="$("$BT/aapt" dump badging "$APK" | head -n 1)"
+          printf '%s\n' "$BADGING" | grep -F "name='com.brainone.next'"
+          printf '%s\n' "$BADGING" | grep -F "versionCode='${VERSION_CODE}'"
+          printf '%s\n' "$BADGING" | grep -F "versionName='${VERSION}'"
+          "$BT/apksigner" verify --print-certs "$APK"
+
+      - name: 릴리스 게시
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="brainone-v${VERSION}"
+          FILES=("work/BrainOne-${VERSION}.apk" "work/BrainOne-${VERSION}.apk.sha256")
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+          else
+            gh release create "$TAG" "${FILES[@]}" --title "Brain One ${VERSION}" --notes "$NOTES" --latest
+          fi
+
+      - name: update.json 갱신
+        env:
+          SHA: ""
+        run: |
+          set -euo pipefail
+          SHA="$(sha256sum "work/BrainOne-${VERSION}.apk" | cut -d' ' -f1)"
+          jq -n --argjson code "$VERSION_CODE" --arg name "$VERSION" \
+            --arg url "https://github.com/${GITHUB_REPOSITORY}/releases/download/brainone-v${VERSION}/BrainOne-${VERSION}.apk" \
+            --arg sha "$SHA" --arg notes "$NOTES" \
+            '{versionCode:$code, versionName:$name, apkUrl:$url, sha256:$sha, notes:$notes}' > update.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add update.json
+          git commit -m "release: publish Brain One ${VERSION} update"
+          git push origin HEAD:main
